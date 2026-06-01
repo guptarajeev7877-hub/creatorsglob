@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 
 const COLORS = ["#FF6B6B","#FFD60A","#4ECDC4","#FF9F1C","#A78BFA","#FF6B9D","#63F5C0","#4CC9F0","#FF006E","#06D6A0"];
-
 const CATEGORIES = [
   { id:"cricket",  icon:"🏏", label:"Cricket",  grad:"linear-gradient(135deg,#00b4d8,#0096c7)", glow:"#00b4d844" },
   { id:"gaming",   icon:"🎮", label:"Gaming",   grad:"linear-gradient(135deg,#7209b7,#560bad)", glow:"#7209b744" },
@@ -18,7 +17,6 @@ const CATEGORIES = [
   { id:"fashion",  icon:"👗", label:"Fashion",  grad:"linear-gradient(135deg,#ff006e,#8338ec)", glow:"#ff006e44" },
   { id:"comedy",   icon:"😂", label:"Comedy",   grad:"linear-gradient(135deg,#ffbe0b,#fb5607)", glow:"#ffbe0b44" },
 ];
-
 const IG_TRENDS = [
   { tag:"#IPL2026",       views:"2.3B", cat:"Cricket",   color:"#00b4d8", emoji:"🏏" },
   { tag:"#AIArt",         views:"1.8B", cat:"Tech",      color:"#7209b7", emoji:"🤖" },
@@ -27,7 +25,6 @@ const IG_TRENDS = [
   { tag:"#FoodTok",       views:"3.2B", cat:"Food",      color:"#f77f00", emoji:"🍕" },
   { tag:"#GymMotivation", views:"1.1B", cat:"Fitness",   color:"#06d6a0", emoji:"💪" },
 ];
-
 const IG_STORIES = [
   { name:"Cricket", emoji:"🏏", c:"#00b4d8" },
   { name:"Gaming",  emoji:"🎮", c:"#7209b7" },
@@ -38,11 +35,9 @@ const IG_STORIES = [
   { name:"Fitness", emoji:"💪", c:"#06d6a0" },
   { name:"Tech",    emoji:"💻", c:"#4361ee" },
 ];
-
 const TICKER = ["🔥 IPL 2026 Finals trending","🎵 Summer Hits playlist viral","💻 AI tools exploding","🏆 Olympics 2026 countdown","📱 New iPhone leaks","🎬 Bollywood blockbusters","💄 Glass skin tutorial viral","🍕 Street food vlogs trending","✈️ Budget travel hacks","😂 Comedy reels blowing up"];
 const FLOAT_EMOJIS = ["🌟","💥","🎊","🎉","✨","🌈","💫","🎈","🦋","🌺","⭐","🎶","💝","🎯","🚀","🎸","🌸","💐"];
-const HERO_WORDS   = ["Content Creators","YouTubers","Instagrammers","TikTokers","Streamers","Bloggers"];
-
+const HERO_WORDS = ["Content Creators","YouTubers","Instagrammers","TikTokers","Streamers","Bloggers"];
 const ORBS = [
   { id:0, size:220, x:5,  y:10, color:"#FF6B6B", dur:14, delay:0   },
   { id:1, size:180, x:80, y:5,  color:"#FFD60A", dur:18, delay:2   },
@@ -52,17 +47,8 @@ const ORBS = [
   { id:5, size:170, x:90, y:80, color:"#63F5C0", dur:15, delay:4   },
   { id:6, size:130, x:30, y:90, color:"#FF9F1C", dur:11, delay:1.5 },
 ];
-
-const CONFETTI = Array.from({ length: 70 }, (_, i) => ({
-  id: i, x: Math.random() * 100, size: 5 + Math.random() * 9,
-  color: COLORS[i % COLORS.length], delay: Math.random() * 4,
-  dur: 3 + Math.random() * 4, isCircle: Math.random() > 0.4, rot: Math.random() * 360,
-}));
-
-const STARS = Array.from({ length: 30 }, (_, i) => ({
-  id: i, x: Math.random() * 100, y: Math.random() * 100,
-  size: 3 + Math.random() * 5, delay: Math.random() * 4, dur: 1.5 + Math.random() * 2,
-}));
+const CONFETTI = Array.from({length:60},(_,i)=>({id:i,x:Math.random()*100,size:5+Math.random()*8,color:COLORS[i%COLORS.length],delay:Math.random()*4,dur:3+Math.random()*4,isCircle:Math.random()>0.4,rot:Math.random()*360}));
+const STARS = Array.from({length:25},(_,i)=>({id:i,x:Math.random()*100,y:Math.random()*100,size:3+Math.random()*5,delay:Math.random()*4,dur:1.5+Math.random()*2}));
 
 export default function CreatosGlob() {
   const [messages, setMessages] = useState([{
@@ -80,86 +66,68 @@ export default function CreatosGlob() {
   const [showConfetti, setShowConfetti] = useState(true);
   const messagesEnd = useRef(null);
 
-  useEffect(() => {
-    const t = setInterval(() => setWordIdx(i => (i + 1) % HERO_WORDS.length), 2800);
-    return () => clearInterval(t);
-  }, []);
+  useEffect(()=>{const t=setInterval(()=>setWordIdx(i=>(i+1)%HERO_WORDS.length),2800);return()=>clearInterval(t);},[]);
+  useEffect(()=>{const t=setTimeout(()=>setShowConfetti(false),5000);return()=>clearTimeout(t);},[]);
+  useEffect(()=>{messagesEnd.current?.scrollIntoView({behavior:"smooth"});},[messages,loading]);
+  useEffect(()=>{
+    const onScroll=()=>{const el=document.documentElement;setScrollPct((el.scrollTop/(el.scrollHeight-el.clientHeight))*100);};
+    window.addEventListener("scroll",onScroll);
+    return()=>window.removeEventListener("scroll",onScroll);
+  },[]);
 
-  useEffect(() => {
-    const t = setTimeout(() => setShowConfetti(false), 5000);
-    return () => clearTimeout(t);
-  }, []);
-
-  useEffect(() => { messagesEnd.current?.scrollIntoView({ behavior:"smooth" }); }, [messages, loading]);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const el = document.documentElement;
-      setScrollPct((el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100);
-    };
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const triggerCelebration = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const burst = { id: Date.now(), x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-    setCelebBursts(p => [...p, burst]);
-    setTimeout(() => setCelebBursts(p => p.filter(b => b.id !== burst.id)), 1200);
+  const triggerCelebration=(e)=>{
+    const rect=e.currentTarget.getBoundingClientRect();
+    const burst={id:Date.now(),x:rect.left+rect.width/2,y:rect.top+rect.height/2};
+    setCelebBursts(p=>[...p,burst]);
+    setTimeout(()=>setCelebBursts(p=>p.filter(b=>b.id!==burst.id)),1200);
   };
 
-  const sendMessage = async (text) => {
-    const msg = text || input.trim();
-    if (!msg) return;
+  const sendMessage=async(text)=>{
+    const msg=text||input.trim();
+    if(!msg)return;
     setInput("");
-    setMessages(p => [...p, { role:"user", content:msg }]);
+    setMessages(p=>[...p,{role:"user",content:msg}]);
     setLoading(true);
-    try {
-      const res = await fetch("/api/chat", {
+    try{
+      const res=await fetch("/api/chat",{
         method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({
-          model:"claude-sonnet-4-20250514",
-          max_tokens:1000,
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
           system:"You are an enthusiastic AI Trend Assistant for CreatosGlob.com. For every query provide: 🔥 TOP 5 CURRENT TRENDS, 📝 FULL READY-TO-USE SCRIPT, 🖼️ 3 THUMBNAIL IDEAS, 🎯 PLATFORM SUGGESTIONS, 💡 PRO TIPS. Use emojis. Be exciting, specific, and practical!",
-          messages:[{ role:"user", content:msg }]
+          messages:[{role:"user",content:msg}]
         })
       });
-      const data = await res.json();
-      setMessages(p => [...p, { role:"assistant", content: data.content?.[0]?.text || "Try again!" }]);
-    } catch {
-      setMessages(p => [...p, { role:"assistant", content:"⚠️ Something went wrong. Please try again!" }]);
+      const data=await res.json();
+      setMessages(p=>[...p,{role:"assistant",content:data.content?.[0]?.text||data.error?.message||"Something went wrong, please try again!"}]);
+    }catch{
+      setMessages(p=>[...p,{role:"assistant",content:"⚠️ Connection error. Please try again!"}]);
     }
     setLoading(false);
   };
 
-  const generateImage = async () => {
-    const prompt = imgPrompt || "Viral YouTube thumbnail ultra vibrant colorful Gen-Z happy style";
+  const generateImage=async()=>{
+    const prompt=imgPrompt||"Viral YouTube thumbnail vibrant colorful Gen-Z happy positive style";
     setImgLoading(true);
     setGenImg(null);
-    try {
-      const res = await fetch("/api/image", {
+    try{
+      const res=await fetch("/api/image",{
         method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ prompt })
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({prompt})
       });
-      const data = await res.json();
-      const b64 = data?.predictions?.[0]?.bytesBase64Encoded;
-      setGenImg(b64 ? `data:image/png;base64,${b64}` : "ERROR");
-    } catch {
-      setGenImg("ERROR");
-    }
+      const data=await res.json();
+      if(data.imageUrl){setGenImg(data.imageUrl);}
+      else{setGenImg("ERROR");}
+    }catch{setGenImg("ERROR");}
     setImgLoading(false);
   };
 
-  const fmt = (text) => text.split("\n").map((l, i) => (
-    <p key={i} style={{margin:"2px 0",lineHeight:1.65}}
-      dangerouslySetInnerHTML={{__html: l.replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>") || "&nbsp;"}}/>
+  const fmt=(text)=>text.split("\n").map((l,i)=>(
+    <p key={i} style={{margin:"2px 0",lineHeight:1.65}} dangerouslySetInnerHTML={{__html:l.replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>")||"&nbsp;"}}/>
   ));
+  const scrollTo=(id)=>document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
 
-  const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:"smooth" });
-
-  return (
+  return(
     <div style={{fontFamily:"'Poppins',sans-serif",background:"#fffdf5",minHeight:"100vh",overflowX:"hidden"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap');
@@ -168,30 +136,27 @@ export default function CreatosGlob() {
         ::-webkit-scrollbar-thumb{background:linear-gradient(#ff6b6b,#ffd60a);border-radius:3px}
         @keyframes orbDrift{0%{transform:translate(0,0) scale(1)}25%{transform:translate(40px,-50px) scale(1.08)}50%{transform:translate(-30px,-80px) scale(0.94)}75%{transform:translate(50px,-40px) scale(1.04)}100%{transform:translate(0,0) scale(1)}}
         @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-        @keyframes float{0%,100%{transform:translateY(0) rotate(0deg) scale(1)}33%{transform:translateY(-22px) rotate(12deg) scale(1.1)}66%{transform:translateY(-10px) rotate(-8deg) scale(0.95)}}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-20px) rotate(8deg)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
         @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
         @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
         @keyframes spin{to{transform:rotate(360deg)}}
-        @keyframes wordIn{0%{opacity:0;transform:translateY(22px) scale(0.9)}20%,80%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-22px) scale(0.9)}}
         @keyframes twinkle{0%,100%{opacity:0.2;transform:scale(0.7)}50%{opacity:1;transform:scale(1.3)}}
-        @keyframes rainbowBorder{0%{border-color:#ff6b6b}16%{border-color:#ffd60a}33%{border-color:#63f5c0}50%{border-color:#4cc9f0}66%{border-color:#a78bfa}83%{border-color:#ff6b9d}100%{border-color:#ff6b6b}}
+        @keyframes rainbowBorder{0%{border-color:#ff6b6b}33%{border-color:#ffd60a}66%{border-color:#63f5c0}100%{border-color:#ff6b6b}}
         @keyframes celebBurst{0%{opacity:1;transform:translate(-50%,-50%) scale(0)}40%{opacity:1;transform:translate(-50%,-50%) scale(1.6)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.5)}}
         @keyframes waveFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
         @keyframes popIn{0%{opacity:0;transform:scale(0.5)}70%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
         @keyframes heartbeat{0%,100%{transform:scale(1)}25%{transform:scale(1.15)}50%{transform:scale(1)}75%{transform:scale(1.08)}}
         @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
-        @keyframes glow{0%,100%{box-shadow:0 0 20px #ff006e44}50%{box-shadow:0 0 40px #ff006e88}}
-        .cat-btn{transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1)!important;animation:popIn 0.5s ease both}
-        .cat-btn:hover{transform:translateY(-10px) scale(1.08) rotate(-2deg)!important;filter:brightness(1.1)}
-        .cat-btn:active{transform:scale(0.94)!important}
-        .ig-card{transition:all 0.22s cubic-bezier(0.34,1.56,0.64,1)!important}
+        .cat-btn{transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1)!important}
+        .cat-btn:hover{transform:translateY(-10px) scale(1.08) rotate(-2deg)!important}
+        .ig-card{transition:all 0.22s ease!important}
         .ig-card:hover{transform:translateY(-6px) scale(1.02)!important}
-        .story-btn{transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1)!important}
+        .story-btn{transition:transform 0.2s ease!important}
         .story-btn:hover{transform:scale(1.18) rotate(3deg)!important}
-        .send-btn:hover{transform:scale(1.14) rotate(-5deg)!important}
-        .send-btn{transition:all 0.15s cubic-bezier(0.34,1.56,0.64,1)!important}
+        .send-btn:hover{transform:scale(1.14)!important}
+        .send-btn{transition:all 0.15s ease!important}
         .pill-btn:hover{transform:scale(1.08) translateY(-2px)!important}
         .pill-btn{transition:all 0.15s!important}
         .story-ring{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);padding:3px;border-radius:50%;display:inline-block}
@@ -199,40 +164,30 @@ export default function CreatosGlob() {
       `}</style>
 
       {/* SCROLL PROGRESS */}
-      <div style={{position:"fixed",top:0,left:0,zIndex:9999,height:5,width:`${scrollPct}%`,background:"linear-gradient(90deg,#ff6b6b,#ff9f1c,#ffd60a,#63f5c0,#4cc9f0,#a78bfa,#ff6b9d)",transition:"width 0.1s ease",borderRadius:"0 4px 4px 0",boxShadow:"0 0 10px rgba(255,107,107,0.6)"}}/>
+      <div style={{position:"fixed",top:0,left:0,zIndex:9999,height:5,width:`${scrollPct}%`,background:"linear-gradient(90deg,#ff6b6b,#ff9f1c,#ffd60a,#63f5c0,#4cc9f0,#a78bfa)",transition:"width 0.1s ease",borderRadius:"0 4px 4px 0",boxShadow:"0 0 10px rgba(255,107,107,0.6)"}}/>
 
-      {/* GLOWING ORBS */}
+      {/* ORBS */}
       <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,overflow:"hidden"}}>
-        {ORBS.map(o=>(
-          <div key={o.id} style={{position:"absolute",width:o.size,height:o.size,borderRadius:"50%",background:`radial-gradient(circle at 35% 35%, ${o.color}55, ${o.color}11)`,border:`2px solid ${o.color}33`,left:`${o.x}%`,top:`${o.y}%`,animation:`orbDrift ${o.dur}s ease-in-out ${o.delay}s infinite`,filter:"blur(2px)",boxShadow:`0 0 40px ${o.color}44`}}/>
-        ))}
+        {ORBS.map(o=><div key={o.id} style={{position:"absolute",width:o.size,height:o.size,borderRadius:"50%",background:`radial-gradient(circle at 35% 35%, ${o.color}55, ${o.color}11)`,border:`2px solid ${o.color}33`,left:`${o.x}%`,top:`${o.y}%`,animation:`orbDrift ${o.dur}s ease-in-out ${o.delay}s infinite`,filter:"blur(2px)",boxShadow:`0 0 40px ${o.color}44`}}/>)}
       </div>
 
       {/* CELEBRATION */}
-      {celebBursts.map(b=>(
-        <div key={b.id} style={{position:"fixed",left:b.x,top:b.y,fontSize:48,animation:"celebBurst 1.2s ease forwards",pointerEvents:"none",zIndex:8888}}>🎉</div>
-      ))}
+      {celebBursts.map(b=><div key={b.id} style={{position:"fixed",left:b.x,top:b.y,fontSize:48,animation:"celebBurst 1.2s ease forwards",pointerEvents:"none",zIndex:8888}}>🎉</div>)}
 
       {/* CONFETTI */}
-      {showConfetti&&(
-        <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:7777,overflow:"hidden"}}>
-          {CONFETTI.map(c=>(
-            <div key={c.id} style={{position:"absolute",width:c.size,height:c.size,background:c.color,borderRadius:c.isCircle?"50%":"3px",left:`${c.x}%`,top:-20,animation:`confettiFall ${c.dur}s ease-in ${c.delay}s forwards`,transform:`rotate(${c.rot}deg)`}}/>
-          ))}
-        </div>
-      )}
+      {showConfetti&&<div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:7777,overflow:"hidden"}}>
+        {CONFETTI.map(c=><div key={c.id} style={{position:"absolute",width:c.size,height:c.size,background:c.color,borderRadius:c.isCircle?"50%":"3px",left:`${c.x}%`,top:-20,animation:`confettiFall ${c.dur}s ease-in ${c.delay}s forwards`,transform:`rotate(${c.rot}deg)`}}/>)}
+      </div>}
 
       {/* STARS */}
       <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,overflow:"hidden"}}>
-        {STARS.map(s=>(
-          <div key={s.id} style={{position:"absolute",left:`${s.x}%`,top:`${s.y}%`,fontSize:s.size,animation:`twinkle ${s.dur}s ease-in-out ${s.delay}s infinite`,opacity:0.3}}>⭐</div>
-        ))}
+        {STARS.map(s=><div key={s.id} style={{position:"absolute",left:`${s.x}%`,top:`${s.y}%`,fontSize:s.size,animation:`twinkle ${s.dur}s ease-in-out ${s.delay}s infinite`,opacity:0.3}}>⭐</div>)}
       </div>
 
       {/* HEADER */}
       <header style={{padding:"14px 28px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(255,253,245,0.94)",backdropFilter:"blur(20px)",borderBottom:"3px solid #ffd60a44",position:"sticky",top:0,zIndex:100,boxShadow:"0 4px 24px rgba(255,214,10,0.1)"}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <div style={{width:46,height:46,borderRadius:16,fontSize:22,background:"linear-gradient(135deg,#ff6b6b,#ffd60a,#63f5c0,#4cc9f0)",backgroundSize:"300% 300%",animation:"gradShift 3s ease infinite",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(255,107,107,0.35)"}}>🌐</div>
+          <div style={{width:46,height:46,borderRadius:16,fontSize:22,background:"linear-gradient(135deg,#ff6b6b,#ffd60a,#63f5c0)",backgroundSize:"300%",animation:"gradShift 3s ease infinite",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(255,107,107,0.35)"}}>🌐</div>
           <div>
             <div style={{fontWeight:900,fontSize:22,background:"linear-gradient(135deg,#ff6b6b,#ff9f1c,#ffd60a)",backgroundSize:"200%",animation:"gradShift 3s ease infinite",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>CreatosGlob</div>
             <div style={{fontSize:10,color:"#ffaa44",letterSpacing:2,textTransform:"uppercase",fontWeight:700}}>✨ AI Trend Engine</div>
@@ -242,47 +197,35 @@ export default function CreatosGlob() {
           <div style={{background:"linear-gradient(135deg,#fff0f0,#fff8e1)",border:"2px solid #ff6b6b44",borderRadius:100,padding:"7px 16px",fontSize:12,fontWeight:700,color:"#ff6b6b",display:"flex",alignItems:"center",gap:6,animation:"heartbeat 2s ease infinite"}}>
             <div style={{width:8,height:8,borderRadius:"50%",background:"#ff6b6b",animation:"pulse 1.2s infinite"}}/>🔥 Live Trends
           </div>
-          <div style={{background:"linear-gradient(135deg,#fff0f6,#fffde7)",border:"2px solid #ffd60a55",borderRadius:100,padding:"7px 18px",fontWeight:700,fontSize:13,color:"#ff9f1c",fontFamily:"Poppins,sans-serif"}}>✨ AI Powered</div>
+          <div style={{background:"linear-gradient(135deg,#fff0f6,#fffde7)",border:"2px solid #ffd60a55",borderRadius:100,padding:"7px 18px",fontWeight:700,fontSize:13,color:"#ff9f1c"}}>✨ AI Powered</div>
         </div>
       </header>
 
       {/* TICKER */}
       <div style={{background:"linear-gradient(135deg,#ff6b6b,#ff9f1c,#ffd60a,#63f5c0,#4cc9f0,#a78bfa)",backgroundSize:"400%",animation:"gradShift 6s ease infinite",padding:"10px 0",overflow:"hidden"}}>
         <div style={{display:"flex",animation:"ticker 26s linear infinite",whiteSpace:"nowrap"}}>
-          {[...TICKER,...TICKER].map((t,i)=>(
-            <span key={i} style={{color:"#fff",fontSize:13,fontWeight:800,marginRight:52,flexShrink:0,textShadow:"0 1px 4px rgba(0,0,0,0.15)"}}>{t}</span>
-          ))}
+          {[...TICKER,...TICKER].map((t,i)=><span key={i} style={{color:"#fff",fontSize:13,fontWeight:800,marginRight:52,flexShrink:0}}>{t}</span>)}
         </div>
       </div>
 
       {/* HERO */}
       <div style={{background:"linear-gradient(160deg,#fffde7 0%,#fff0f6 40%,#f0fff4 80%,#e8f4ff 100%)",padding:"80px 20px 72px",textAlign:"center",position:"relative",overflow:"hidden",zIndex:1}}>
-        {FLOAT_EMOJIS.map((e,i)=>(
-          <div key={i} style={{position:"absolute",fontSize:20+(i%4)*8,left:`${(i*5.8)%95}%`,top:`${(i*14)%85}%`,animation:`float ${3+(i%4)*0.8}s ease-in-out infinite`,animationDelay:`${i*0.22}s`,opacity:0.18,pointerEvents:"none",userSelect:"none",zIndex:0}}>{e}</div>
-        ))}
+        {FLOAT_EMOJIS.map((e,i)=><div key={i} style={{position:"absolute",fontSize:20+(i%4)*8,left:`${(i*5.8)%95}%`,top:`${(i*14)%85}%`,animation:`float ${3+(i%4)*0.8}s ease-in-out infinite`,animationDelay:`${i*0.22}s`,opacity:0.18,pointerEvents:"none",userSelect:"none",zIndex:0}}>{e}</div>)}
         <div style={{position:"relative",zIndex:1}}>
-          <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"linear-gradient(135deg,#fff0f6,#fffde7)",border:"2.5px solid #ffd60a",borderRadius:100,padding:"9px 22px",fontSize:13,fontWeight:800,color:"#ff9f1c",marginBottom:26,boxShadow:"0 4px 20px rgba(255,214,10,0.2)",animation:"pulse 3s ease infinite"}}>
-            <span style={{animation:"spin 4s linear infinite",display:"inline-block"}}>🌟</span>
-            #1 AI Platform for Content Creators
-            <span style={{animation:"spin 4s linear infinite reverse",display:"inline-block"}}>🌟</span>
+          <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"linear-gradient(135deg,#fff0f6,#fffde7)",border:"2.5px solid #ffd60a",borderRadius:100,padding:"9px 22px",fontSize:13,fontWeight:800,color:"#ff9f1c",marginBottom:26,animation:"pulse 3s ease infinite"}}>
+            <span style={{animation:"spin 4s linear infinite",display:"inline-block"}}>🌟</span>#1 AI Platform for Content Creators<span style={{animation:"spin 4s linear infinite reverse",display:"inline-block"}}>🌟</span>
           </div>
           <h1 style={{fontSize:"clamp(2rem,6vw,4.2rem)",fontWeight:900,lineHeight:1.1,marginBottom:14,color:"#222"}}>
             <span style={{display:"block",animation:"fadeUp 0.8s ease 0.2s both"}}>Made with 💛 for</span>
-            <span style={{background:"linear-gradient(135deg,#ff6b6b,#ff9f1c,#ffd60a,#63f5c0,#4cc9f0,#a78bfa,#ff6b9d)",backgroundSize:"300%",animation:"gradShift 3s ease infinite",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",display:"inline-block",minWidth:340}}>{HERO_WORDS[wordIdx]}</span>
+            <span style={{background:"linear-gradient(135deg,#ff6b6b,#ff9f1c,#ffd60a,#63f5c0,#4cc9f0,#a78bfa)",backgroundSize:"300%",animation:"gradShift 3s ease infinite",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",display:"inline-block",minWidth:340}}>{HERO_WORDS[wordIdx]}</span>
             <span style={{display:"block",fontSize:"clamp(1.3rem,3.5vw,2.4rem)",color:"#444",WebkitTextFillColor:"#444",animation:"fadeUp 0.8s ease 0.4s both"}}>Around the World! 🌍</span>
           </h1>
-          <p style={{fontSize:17,color:"#888",maxWidth:500,margin:"0 auto 36px",lineHeight:1.8,animation:"fadeUp 0.8s ease 0.6s both"}}>
-            🎯 Discover viral trends · 📝 Get AI scripts · 🎨 Generate thumbnails · 🚀 Dominate every platform
-          </p>
+          <p style={{fontSize:17,color:"#888",maxWidth:500,margin:"0 auto 36px",lineHeight:1.8,animation:"fadeUp 0.8s ease 0.6s both"}}>🎯 Discover viral trends · 📝 Get AI scripts · 🎨 Generate thumbnails · 🚀 Dominate every platform</p>
           <div style={{display:"flex",gap:16,justifyContent:"center",flexWrap:"wrap",animation:"fadeUp 0.8s ease 0.8s both"}}>
-            <button onClick={()=>scrollTo("chat-section")} style={{background:"linear-gradient(135deg,#ff6b6b,#ff9f1c,#ffd60a)",backgroundSize:"200%",animation:"gradShift 3s ease infinite",border:"none",color:"#fff",padding:"16px 38px",borderRadius:100,fontSize:16,fontWeight:800,cursor:"pointer",fontFamily:"Poppins,sans-serif",boxShadow:"0 8px 32px rgba(255,107,107,0.4)"}}>
-              🔥 Explore Trends Now!
-            </button>
-            <button onClick={()=>scrollTo("ig-section")} style={{background:"linear-gradient(135deg,#fff0f6,#fff8e1)",border:"3px solid #ffd60a",color:"#ff9f1c",padding:"16px 38px",borderRadius:100,fontSize:16,fontWeight:800,cursor:"pointer",fontFamily:"Poppins,sans-serif"}}>
-              📸 Instagram Trends ✨
-            </button>
+            <button onClick={()=>scrollTo("chat-section")} style={{background:"linear-gradient(135deg,#ff6b6b,#ff9f1c,#ffd60a)",backgroundSize:"200%",animation:"gradShift 3s ease infinite",border:"none",color:"#fff",padding:"16px 38px",borderRadius:100,fontSize:16,fontWeight:800,cursor:"pointer",fontFamily:"Poppins,sans-serif",boxShadow:"0 8px 32px rgba(255,107,107,0.4)"}}>🔥 Explore Trends Now!</button>
+            <button onClick={()=>scrollTo("ig-section")} style={{background:"linear-gradient(135deg,#fff0f6,#fff8e1)",border:"3px solid #ffd60a",color:"#ff9f1c",padding:"16px 38px",borderRadius:100,fontSize:16,fontWeight:800,cursor:"pointer",fontFamily:"Poppins,sans-serif"}}>📸 Instagram Trends ✨</button>
           </div>
-          <div style={{display:"flex",gap:48,justifyContent:"center",marginTop:52,flexWrap:"wrap",animation:"fadeUp 0.8s ease 1s both"}}>
+          <div style={{display:"flex",gap:48,justifyContent:"center",marginTop:52,flexWrap:"wrap"}}>
             {[["🎯 10K+","Happy Creators"],["📊 50K+","Daily Trends"],["🤖 100%","AI Powered"],["❤️ Free","To Start"]].map(([n,l])=>(
               <div key={l} style={{textAlign:"center"}}>
                 <div style={{fontSize:26,fontWeight:900,background:"linear-gradient(135deg,#ff6b6b,#ffd60a)",backgroundSize:"200%",animation:"gradShift 3s ease infinite",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{n}</div>
@@ -295,9 +238,7 @@ export default function CreatosGlob() {
 
       {/* WAVE */}
       <div style={{background:"linear-gradient(160deg,#fffde7,#fff0f6)",lineHeight:0}}>
-        <svg viewBox="0 0 1200 80" style={{display:"block",width:"100%"}}>
-          <path d="M0,40 C200,80 400,0 600,40 C800,80 1000,0 1200,40 L1200,80 L0,80 Z" fill="#ffffff"/>
-        </svg>
+        <svg viewBox="0 0 1200 80" style={{display:"block",width:"100%"}}><path d="M0,40 C200,80 400,0 600,40 C800,80 1000,0 1200,40 L1200,80 L0,80 Z" fill="#ffffff"/></svg>
       </div>
 
       {/* CATEGORIES */}
@@ -310,7 +251,7 @@ export default function CreatosGlob() {
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(148px,1fr))",gap:16}}>
           {CATEGORIES.map((cat,i)=>(
             <button key={cat.id} className="cat-btn" onClick={(e)=>{triggerCelebration(e);sendMessage(`Show me top 5 viral trending content ideas, a complete YouTube script, thumbnail concepts, and platform tips for the ${cat.label} niche`);scrollTo("chat-section");}}
-              style={{background:cat.grad,border:"none",borderRadius:22,padding:"28px 14px",cursor:"pointer",color:"#fff",display:"flex",flexDirection:"column",alignItems:"center",gap:10,boxShadow:`0 10px 32px ${cat.glow}`,animationDelay:`${i*0.05}s`}}>
+              style={{background:cat.grad,border:"none",borderRadius:22,padding:"28px 14px",cursor:"pointer",color:"#fff",display:"flex",flexDirection:"column",alignItems:"center",gap:10,boxShadow:`0 10px 32px ${cat.glow}`}}>
               <span style={{fontSize:40,animation:`waveFloat ${2.5+(i%3)*0.5}s ease-in-out infinite`,animationDelay:`${i*0.15}s`}}>{cat.icon}</span>
               <span style={{fontSize:14,fontWeight:800,fontFamily:"Poppins,sans-serif"}}>{cat.label}</span>
             </button>
@@ -320,9 +261,7 @@ export default function CreatosGlob() {
 
       {/* WAVE */}
       <div style={{background:"#fff",lineHeight:0}}>
-        <svg viewBox="0 0 1200 80" style={{display:"block",width:"100%"}}>
-          <path d="M0,40 C200,0 400,80 600,40 C800,0 1000,80 1200,40 L1200,80 L0,80 Z" fill="#fffde7"/>
-        </svg>
+        <svg viewBox="0 0 1200 80" style={{display:"block",width:"100%"}}><path d="M0,40 C200,0 400,80 600,40 C800,0 1000,80 1200,40 L1200,80 L0,80 Z" fill="#fffde7"/></svg>
       </div>
 
       {/* INSTAGRAM */}
@@ -340,7 +279,7 @@ export default function CreatosGlob() {
           <div style={{display:"flex",gap:20,overflowX:"auto",paddingBottom:16,marginBottom:42,justifyContent:"center",flexWrap:"wrap"}}>
             {IG_STORIES.map((s,i)=>(
               <button key={s.name} className="story-btn" onClick={()=>{sendMessage(`Give me top viral Instagram Reels ideas, trending hashtags, hook lines, and growth tips for ${s.name} niche in 2026`);scrollTo("chat-section");}}
-                style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8,background:"none",border:"none",cursor:"pointer",animation:`popIn 0.5s ease ${i*0.07}s both`}}>
+                style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8,background:"none",border:"none",cursor:"pointer"}}>
                 <div className="story-ring" style={{animation:"heartbeat 3s ease infinite",animationDelay:`${i*0.2}s`}}>
                   <div style={{width:66,height:66,borderRadius:"50%",background:`${s.c}22`,border:"3px solid #fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28}}>{s.emoji}</div>
                 </div>
@@ -351,33 +290,30 @@ export default function CreatosGlob() {
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:18}}>
             {IG_TRENDS.map((t,i)=>(
               <div key={t.tag} className="ig-card rainbow-card" onClick={()=>{sendMessage(`Create a complete viral Instagram Reel script, caption, hashtag set and posting strategy for ${t.tag} in ${t.cat} niche`);scrollTo("chat-section");}}
-                style={{background:"#fff",borderRadius:24,padding:22,border:`3px solid ${t.color}`,boxShadow:`0 8px 32px ${t.color}22`,cursor:"pointer",animation:`popIn 0.5s ease ${i*0.1}s both`}}>
+                style={{background:"#fff",borderRadius:24,padding:22,border:`3px solid ${t.color}`,boxShadow:`0 8px 32px ${t.color}22`,cursor:"pointer"}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
                   <div style={{background:`${t.color}18`,borderRadius:14,padding:"8px 14px",display:"inline-flex",alignItems:"center",gap:8}}>
-                    <span style={{fontSize:22,animation:"waveFloat 2s ease-in-out infinite"}}>{t.emoji}</span>
+                    <span style={{fontSize:22}}>{t.emoji}</span>
                     <span style={{fontWeight:900,color:t.color,fontSize:16}}>{t.tag}</span>
                   </div>
-                  <div style={{background:"linear-gradient(135deg,#ff6b6b,#ffd60a)",borderRadius:100,padding:"5px 12px",fontSize:11,color:"#fff",fontWeight:800,animation:"pulse 2s ease infinite"}}>🔥 Hot!</div>
+                  <div style={{background:"linear-gradient(135deg,#ff6b6b,#ffd60a)",borderRadius:100,padding:"5px 12px",fontSize:11,color:"#fff",fontWeight:800}}>🔥 Hot!</div>
                 </div>
                 <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
                   <span style={{fontSize:13,color:"#aaa",fontWeight:600}}>📂 {t.cat}</span>
                   <span style={{fontSize:13,fontWeight:800,color:"#333"}}>👁️ {t.views}</span>
                 </div>
-                <div style={{background:`linear-gradient(135deg,${t.color}15,${t.color}08)`,borderRadius:12,padding:"10px 14px",fontSize:12,color:t.color,fontWeight:700,border:`1.5px dashed ${t.color}44`}}>
-                  💡 Tap for AI script & full strategy! →
-                </div>
+                <div style={{background:`linear-gradient(135deg,${t.color}15,${t.color}08)`,borderRadius:12,padding:"10px 14px",fontSize:12,color:t.color,fontWeight:700,border:`1.5px dashed ${t.color}44`}}>💡 Tap for AI script & full strategy! →</div>
               </div>
             ))}
           </div>
-          <div style={{marginTop:40,background:"#fff",borderRadius:28,padding:30,border:"3px solid #ffd60a44",boxShadow:"0 8px 40px rgba(255,214,10,0.12)"}}>
+          <div style={{marginTop:40,background:"#fff",borderRadius:28,padding:30,border:"3px solid #ffd60a44"}}>
             <div style={{fontWeight:900,fontSize:18,marginBottom:22,color:"#222",display:"flex",alignItems:"center",gap:10}}>
-              <span style={{animation:"spin 4s linear infinite",display:"inline-block"}}>💡</span>
-              Instagram Growth Tips for 2026
+              <span style={{animation:"spin 4s linear infinite",display:"inline-block"}}>💡</span>Instagram Growth Tips for 2026
             </div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:16}}>
               {[["⏰","Best Post Times","6–9 PM gets 3× more reach"],["📹","Reels Rule","2× more reach than photos"],["#️⃣","Hashtags","5–8 niche tags, not 30"],["🔁","Consistency","4–5 Reels/week for growth"],["🪝","Strong Hooks","First 2 seconds decide all"],["🎵","Trending Audio","5× reach with trending sounds"]].map(([icon,title,tip],i)=>(
-                <div key={title} style={{background:"linear-gradient(135deg,#fffde7,#fff0f6)",borderRadius:18,padding:18,border:"2px solid #ffd60a33",animation:`popIn 0.5s ease ${i*0.1}s both`}}>
-                  <div style={{fontSize:26,marginBottom:8,animation:"waveFloat 3s ease-in-out infinite",animationDelay:`${i*0.3}s`,display:"inline-block"}}>{icon}</div>
+                <div key={title} style={{background:"linear-gradient(135deg,#fffde7,#fff0f6)",borderRadius:18,padding:18,border:"2px solid #ffd60a33"}}>
+                  <div style={{fontSize:26,marginBottom:8,display:"inline-block"}}>{icon}</div>
                   <div style={{fontWeight:800,fontSize:13,marginBottom:5,color:"#222"}}>{title}</div>
                   <div style={{fontSize:12,color:"#888",lineHeight:1.6}}>{tip}</div>
                 </div>
@@ -389,9 +325,7 @@ export default function CreatosGlob() {
 
       {/* WAVE */}
       <div style={{background:"linear-gradient(160deg,#fffde7,#fff0f6)",lineHeight:0}}>
-        <svg viewBox="0 0 1200 80" style={{display:"block",width:"100%"}}>
-          <path d="M0,20 C300,80 600,0 900,60 C1050,90 1150,10 1200,30 L1200,80 L0,80 Z" fill="#ffffff"/>
-        </svg>
+        <svg viewBox="0 0 1200 80" style={{display:"block",width:"100%"}}><path d="M0,20 C300,80 600,0 900,60 C1050,90 1150,10 1200,30 L1200,80 L0,80 Z" fill="#ffffff"/></svg>
       </div>
 
       {/* CHAT + IMAGE */}
@@ -402,15 +336,13 @@ export default function CreatosGlob() {
           <p style={{color:"#bbb",marginTop:8,fontSize:14}}>Scripts · Trends · Thumbnails · Platform tips — all in seconds!</p>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 340px",gap:24}}>
-          {/* CHAT */}
           <div style={{background:"#fff",borderRadius:28,border:"3px solid #ffd60a44",display:"flex",flexDirection:"column",height:580,overflow:"hidden",boxShadow:"0 12px 50px rgba(255,214,10,0.12)"}}>
             <div style={{padding:"18px 22px",borderBottom:"2px solid #fffde7",background:"linear-gradient(135deg,#fffde7,#fff0f6)",display:"flex",alignItems:"center",gap:12}}>
-              <div style={{width:48,height:48,borderRadius:16,background:"linear-gradient(135deg,#ff6b6b,#ffd60a)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,animation:"heartbeat 2s ease infinite",boxShadow:"0 4px 16px rgba(255,107,107,0.35)"}}>🤖</div>
+              <div style={{width:48,height:48,borderRadius:16,background:"linear-gradient(135deg,#ff6b6b,#ffd60a)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,animation:"heartbeat 2s ease infinite"}}>🤖</div>
               <div>
                 <div style={{fontWeight:900,fontSize:15,color:"#222"}}>Trend AI Assistant 🌟</div>
                 <div style={{fontSize:12,color:"#aaa",display:"flex",alignItems:"center",gap:5}}>
-                  <div style={{width:8,height:8,borderRadius:"50%",background:"#63f5c0",animation:"pulse 1.2s infinite"}}/>
-                  Online & Ready! · Powered by Claude
+                  <div style={{width:8,height:8,borderRadius:"50%",background:"#63f5c0",animation:"pulse 1.2s infinite"}}/>Online & Ready! · Powered by Claude
                 </div>
               </div>
               <div style={{marginLeft:"auto",background:"linear-gradient(135deg,#fffde7,#fff0f6)",borderRadius:10,padding:"4px 12px",fontSize:11,color:"#ff9f1c",fontWeight:800,border:"1.5px solid #ffd60a44"}}>{messages.length} msgs 💬</div>
@@ -418,21 +350,19 @@ export default function CreatosGlob() {
             <div style={{flex:1,overflowY:"auto",padding:"18px",display:"flex",flexDirection:"column",gap:14}}>
               {messages.map((m,i)=>(
                 <div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start",animation:"fadeUp 0.35s ease"}}>
-                  <div style={{maxWidth:"86%",background:m.role==="user"?"linear-gradient(135deg,#ff6b6b,#ff9f1c,#ffd60a)":"linear-gradient(135deg,#fffde7,#fff0f6)",color:m.role==="user"?"#fff":"#333",padding:"13px 17px",borderRadius:20,fontSize:13,borderBottomRightRadius:m.role==="user"?4:20,borderBottomLeftRadius:m.role==="assistant"?4:20,boxShadow:m.role==="user"?"0 4px 20px rgba(255,107,107,0.3)":"0 4px 16px rgba(255,214,10,0.1)",border:m.role==="assistant"?"2px solid #ffd60a22":"none"}}>
+                  <div style={{maxWidth:"86%",background:m.role==="user"?"linear-gradient(135deg,#ff6b6b,#ff9f1c,#ffd60a)":"linear-gradient(135deg,#fffde7,#fff0f6)",color:m.role==="user"?"#fff":"#333",padding:"13px 17px",borderRadius:20,fontSize:13,borderBottomRightRadius:m.role==="user"?4:20,borderBottomLeftRadius:m.role==="assistant"?4:20,boxShadow:m.role==="user"?"0 4px 20px rgba(255,107,107,0.3)":"0 4px 16px rgba(255,214,10,0.1)"}}>
                     {fmt(m.content)}
                   </div>
                 </div>
               ))}
-              {loading&&(
-                <div style={{display:"flex",gap:7,padding:"14px 18px",background:"linear-gradient(135deg,#fffde7,#fff0f6)",borderRadius:20,width:"fit-content",border:"2px solid #ffd60a22"}}>
-                  {[0,1,2].map(i=><div key={i} style={{width:10,height:10,borderRadius:"50%",background:"linear-gradient(135deg,#ff6b6b,#ffd60a)",animation:"bounce 1.2s infinite",animationDelay:`${i*0.2}s`}}/>)}
-                </div>
-              )}
+              {loading&&<div style={{display:"flex",gap:7,padding:"14px 18px",background:"linear-gradient(135deg,#fffde7,#fff0f6)",borderRadius:20,width:"fit-content"}}>
+                {[0,1,2].map(i=><div key={i} style={{width:10,height:10,borderRadius:"50%",background:"linear-gradient(135deg,#ff6b6b,#ffd60a)",animation:"bounce 1.2s infinite",animationDelay:`${i*0.2}s`}}/>)}
+              </div>}
               <div ref={messagesEnd}/>
             </div>
             <div style={{padding:"10px 18px 0",display:"flex",gap:7,flexWrap:"wrap"}}>
-              {["🏏 Cricket","🎵 Music scripts","💄 Beauty reels","💻 Tech ideas","😂 Comedy"].map(s=>(
-                <button key={s} className="pill-btn" onClick={()=>sendMessage(s+" trends")} style={{background:"linear-gradient(135deg,#fffde7,#fff0f6)",border:"2px solid #ffd60a55",borderRadius:100,padding:"5px 13px",fontSize:11,fontWeight:800,color:"#ff9f1c",cursor:"pointer",fontFamily:"Poppins,sans-serif"}}>{s}</button>
+              {["🏏 Cricket","🎵 Music","💄 Beauty","💻 Tech","😂 Comedy"].map(s=>(
+                <button key={s} className="pill-btn" onClick={()=>sendMessage(s+" trends and viral ideas")} style={{background:"linear-gradient(135deg,#fffde7,#fff0f6)",border:"2px solid #ffd60a55",borderRadius:100,padding:"5px 13px",fontSize:11,fontWeight:800,color:"#ff9f1c",cursor:"pointer",fontFamily:"Poppins,sans-serif"}}>{s}</button>
               ))}
             </div>
             <div style={{padding:"12px 18px 16px",borderTop:"2px solid #fffde7",marginTop:8}}>
@@ -443,18 +373,17 @@ export default function CreatosGlob() {
             </div>
           </div>
 
-          {/* RIGHT SIDEBAR */}
           <div style={{display:"flex",flexDirection:"column",gap:18}}>
             <div style={{background:"#fff",borderRadius:28,border:"3px solid #ffd60a44",padding:22,boxShadow:"0 12px 50px rgba(255,214,10,0.1)"}}>
               <div style={{fontWeight:900,fontSize:15,marginBottom:4,color:"#222"}}>🎨 AI Thumbnail Maker</div>
-              <div style={{fontSize:11,color:"#bc1888",background:"linear-gradient(135deg,#fff0ff,#fffde7)",borderRadius:100,padding:"3px 12px",display:"inline-block",fontWeight:800,marginBottom:14,border:"1.5px solid #bc188833"}}>✨ Powered by Gemini</div>
+              <div style={{fontSize:11,color:"#06d6a0",background:"linear-gradient(135deg,#f0fff4,#fffde7)",borderRadius:100,padding:"3px 12px",display:"inline-block",fontWeight:800,marginBottom:14,border:"1.5px solid #06d6a033"}}>✨ 100% Free · Powered by AI</div>
               <input value={imgPrompt} onChange={e=>setImgPrompt(e.target.value)} placeholder="e.g. Viral cricket IPL thumbnail..." style={{width:"100%",border:"2px solid #ffd60a44",borderRadius:12,padding:"9px 13px",fontSize:12,outline:"none",marginBottom:10,fontFamily:"Poppins,sans-serif",background:"#fffdf5"}}/>
-              <button onClick={generateImage} disabled={imgLoading} style={{width:"100%",background:imgLoading?"#f5f5f5":"linear-gradient(135deg,#f09433,#e6683c,#bc1888)",border:"none",borderRadius:12,padding:11,color:imgLoading?"#bbb":"#fff",fontWeight:800,cursor:"pointer",fontSize:13,fontFamily:"Poppins,sans-serif",boxShadow:imgLoading?"none":"0 4px 16px rgba(240,148,51,0.35)"}}>
+              <button onClick={generateImage} disabled={imgLoading} style={{width:"100%",background:imgLoading?"#f5f5f5":"linear-gradient(135deg,#06d6a0,#0096c7)",border:"none",borderRadius:12,padding:11,color:imgLoading?"#bbb":"#fff",fontWeight:800,cursor:"pointer",fontSize:13,fontFamily:"Poppins,sans-serif",boxShadow:imgLoading?"none":"0 4px 16px rgba(6,214,160,0.35)"}}>
                 {imgLoading?"⏳ Creating magic...":"✨ Generate Thumbnail!"}
               </button>
               <div style={{marginTop:12,borderRadius:16,minHeight:130,background:"linear-gradient(135deg,#fffde7,#fff0f6)",display:"flex",alignItems:"center",justifyContent:"center",border:"2.5px dashed #ffd60a55",overflow:"hidden"}}>
                 {imgLoading?<div style={{textAlign:"center",color:"#ff9f1c"}}><div style={{fontSize:36,animation:"spin 1s linear infinite"}}>🎨</div><div style={{fontSize:12,marginTop:6,fontWeight:600}}>Creating magic... ✨</div></div>
-                :genImg==="ERROR"?<div style={{textAlign:"center",color:"#ff6b6b",padding:16,fontSize:12,fontWeight:600}}>❌ Error generating image.<br/>Check Gemini API key in Vercel.</div>
+                :genImg==="ERROR"?<div style={{textAlign:"center",color:"#ff6b6b",padding:16,fontSize:12,fontWeight:600}}>❌ Error generating image.<br/>Please try again!</div>
                 :genImg?<img src={genImg} alt="AI Thumbnail" style={{width:"100%",borderRadius:14}}/>
                 :<div style={{textAlign:"center",color:"#ddd",fontSize:12}}><div style={{fontSize:36,animation:"waveFloat 2s ease-in-out infinite"}}>🖼️</div><div style={{marginTop:6,fontWeight:600}}>Your thumbnail here</div></div>}
               </div>
@@ -463,8 +392,8 @@ export default function CreatosGlob() {
               <div style={{fontWeight:900,fontSize:15,marginBottom:16,color:"#222"}}>🎯 Top Platforms</div>
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
                 {[{name:"YouTube",icon:"▶️",c:"#ff0000",tag:"Long-form videos"},{name:"Instagram",icon:"📸",c:"#bc1888",tag:"Reels & Stories"},{name:"TikTok",icon:"🎵",c:"#111",tag:"Short viral clips"},{name:"InVideo AI",icon:"🎞️",c:"#8338ec",tag:"AI video maker"},{name:"Canva AI",icon:"🎨",c:"#00c4cc",tag:"Thumbnails & designs"},{name:"Kling AI",icon:"🤖",c:"#ff6b6b",tag:"Image-to-video AI"}].map((p,i)=>(
-                  <div key={p.name} style={{display:"flex",alignItems:"center",gap:12,background:`${p.c}09`,border:`2px solid ${p.c}33`,borderRadius:14,padding:"10px 14px",animation:`popIn 0.5s ease ${i*0.08}s both`}}>
-                    <span style={{fontSize:20,animation:"waveFloat 3s ease-in-out infinite",animationDelay:`${i*0.2}s`}}>{p.icon}</span>
+                  <div key={p.name} style={{display:"flex",alignItems:"center",gap:12,background:`${p.c}09`,border:`2px solid ${p.c}33`,borderRadius:14,padding:"10px 14px"}}>
+                    <span style={{fontSize:20}}>{p.icon}</span>
                     <div>
                       <div style={{fontSize:13,fontWeight:800,color:"#222"}}>{p.name}</div>
                       <div style={{fontSize:11,color:"#bbb"}}>{p.tag}</div>
@@ -479,20 +408,16 @@ export default function CreatosGlob() {
 
       {/* WAVE */}
       <div style={{background:"#fff",lineHeight:0}}>
-        <svg viewBox="0 0 1200 80" style={{display:"block",width:"100%"}}>
-          <path d="M0,40 C200,80 400,0 600,50 C800,90 1000,10 1200,40 L1200,80 L0,80 Z" fill="#fffde7"/>
-        </svg>
+        <svg viewBox="0 0 1200 80" style={{display:"block",width:"100%"}}><path d="M0,40 C200,80 400,0 600,50 C800,90 1000,10 1200,40 L1200,80 L0,80 Z" fill="#fffde7"/></svg>
       </div>
 
       {/* FOOTER */}
-      <div style={{background:"linear-gradient(135deg,#ff6b6b,#ff9f1c,#ffd60a,#63f5c0,#4cc9f0,#a78bfa,#ff6b9d)",backgroundSize:"400%",animation:"gradShift 6s ease infinite",padding:"40px 20px",textAlign:"center",color:"#fff",position:"relative",overflow:"hidden"}}>
-        {["🎉","✨","🌟","🎊","💫","🎈"].map((e,i)=>(
-          <div key={i} style={{position:"absolute",fontSize:24,left:`${(i*17)%95}%`,bottom:0,animation:`float ${3+i*0.5}s ease-in-out infinite`,animationDelay:`${i*0.4}s`,opacity:0.3}}>{e}</div>
-        ))}
+      <div style={{background:"linear-gradient(135deg,#ff6b6b,#ff9f1c,#ffd60a,#63f5c0,#4cc9f0,#a78bfa)",backgroundSize:"400%",animation:"gradShift 6s ease infinite",padding:"40px 20px",textAlign:"center",color:"#fff",position:"relative",overflow:"hidden"}}>
+        {["🎉","✨","🌟","🎊","💫","🎈"].map((e,i)=><div key={i} style={{position:"absolute",fontSize:24,left:`${(i*17)%95}%`,bottom:0,animation:`float ${3+i*0.5}s ease-in-out infinite`,animationDelay:`${i*0.4}s`,opacity:0.3}}>{e}</div>)}
         <div style={{position:"relative",zIndex:1}}>
-          <div style={{fontSize:28,fontWeight:900,marginBottom:6,textShadow:"0 2px 8px rgba(0,0,0,0.15)"}}>CreatosGlob 🌐</div>
+          <div style={{fontSize:28,fontWeight:900,marginBottom:6}}>CreatosGlob 🌐</div>
           <div style={{fontSize:15,opacity:0.9,marginBottom:4,fontWeight:600}}>Made with 💛 for Happy Content Creators!</div>
-          <div style={{fontSize:13,opacity:0.7}}>creatosglob.com · Powered by Claude + Gemini AI ✨</div>
+          <div style={{fontSize:13,opacity:0.7}}>creatorsglob.com · Powered by Claude + AI ✨</div>
         </div>
       </div>
     </div>
