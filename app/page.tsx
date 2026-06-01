@@ -104,6 +104,18 @@ IMPORTANT: Always be friendly, energetic and supportive. Main focus is content c
     setLoading(false);
   };
 
+  const downloadImage=async()=>{
+    try{
+      const response=await fetch(genImg);
+      const blob=await response.blob();
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url; a.download="creatosglob-thumbnail.jpg";
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a); URL.revokeObjectURL(url);
+    }catch{ window.open(genImg,"_blank"); }
+  };
+
   const generateImage=async()=>{
     const prompt=imgPrompt||"Viral YouTube thumbnail professional vibrant modern style";
     setImgLoading(true); setGenImg(null); setActiveTab("image");
@@ -423,10 +435,15 @@ IMPORTANT: Always be friendly, energetic and supportive. Main focus is content c
                 <button onClick={generateImage} disabled={imgLoading} style={{width:"100%",background:imgLoading?"#f3f4f6":"linear-gradient(135deg,#8B5CF6,#EC4899)",border:"none",borderRadius:10,padding:11,color:imgLoading?"#9ca3af":"white",fontWeight:700,cursor:"pointer",fontSize:13,fontFamily:"DM Sans,sans-serif"}}>
                   {imgLoading?"Creating thumbnail...":"Generate Thumbnail ✦"}
                 </button>
-                <div style={{marginTop:12,borderRadius:14,minHeight:120,background:"#fafafa",display:"flex",alignItems:"center",justifyContent:"center",border:"1.5px dashed #ede9fe",overflow:"hidden"}}>
+                <div style={{marginTop:12,borderRadius:14,minHeight:120,background:"#fafafa",display:"flex",alignItems:"center",justifyContent:"center",border:"1.5px dashed #ede9fe",overflow:"hidden",position:"relative"}}>
                   {imgLoading?<div style={{textAlign:"center",color:"#8B5CF6",padding:20}}><div style={{fontSize:28,animation:"spin 1s linear infinite",display:"inline-block"}}>✦</div><div style={{fontSize:12,marginTop:8,fontWeight:500}}>Creating your thumbnail...</div></div>
                   :genImg==="ERROR"?<div style={{textAlign:"center",color:"#ef4444",padding:16,fontSize:12,fontWeight:500}}>Error generating. Please try again.</div>
-                  :genImg?<img src={genImg} alt="AI Thumbnail" style={{width:"100%",borderRadius:14}}/>
+                  :genImg?<>
+                    <img src={genImg} alt="AI Thumbnail" style={{width:"100%",borderRadius:14}}/>
+                    <button onClick={downloadImage} style={{position:"absolute",bottom:10,right:10,background:"linear-gradient(135deg,#8B5CF6,#EC4899)",border:"none",borderRadius:100,padding:"8px 16px",color:"white",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"DM Sans,sans-serif",boxShadow:"0 4px 12px rgba(139,92,246,0.4)",display:"flex",alignItems:"center",gap:6}}>
+                      ⬇️ Download
+                    </button>
+                  </>
                   :<div style={{textAlign:"center",color:"#d1d5db",fontSize:12,padding:20}}><div style={{fontSize:32,marginBottom:8}}>🖼</div>Thumbnail appears here</div>}
                 </div>
               </div>
