@@ -69,6 +69,7 @@ export default function CreatosGlob() {
   useEffect(()=>{const t=setInterval(()=>setWordIdx(i=>(i+1)%HERO_WORDS.length),2800);return()=>clearInterval(t);},[]);
   useEffect(()=>{const t=setTimeout(()=>setShowConfetti(false),5000);return()=>clearTimeout(t);},[]);
   useEffect(()=>{messagesEnd.current?.scrollIntoView({behavior:"smooth"});},[messages,loading]);
+  useEffect(()=>{ window.scrollTo(0,0); },[]);
   useEffect(()=>{
     const onScroll=()=>{const el=document.documentElement;setScrollPct((el.scrollTop/(el.scrollHeight-el.clientHeight))*100);};
     window.addEventListener("scroll",onScroll);
