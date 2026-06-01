@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
           { role: "system", content: systemPrompt },
           { role: "user", content: userMessage }
         ],
-        max_tokens: 1000,
+        max_tokens: 1500,
         temperature: 0.9
       })
     });

@@ -58,7 +58,6 @@ export default function CreatosGlob() {
   useEffect(()=>{ window.scrollTo(0,0); },[]);
   useEffect(()=>{const t=setInterval(()=>setWordIdx(i=>(i+1)%HERO_WORDS.length),3000);return()=>clearInterval(t);},[]);
   useEffect(()=>{messagesEnd.current?.scrollIntoView({behavior:"smooth"});},[messages,loading]);
-  useEffect(()=>{ window.scrollTo(0,0); },[]);
   useEffect(()=>{
     const fn=()=>{const e=document.documentElement;setScrollPct((e.scrollTop/(e.scrollHeight-e.clientHeight))*100);};
     window.addEventListener("scroll",fn);return()=>window.removeEventListener("scroll",fn);
@@ -72,7 +71,29 @@ export default function CreatosGlob() {
     try{
       const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
-          system:"You are an expert AI content strategist for CreatosGlob.com. For every query provide: 🔥 TOP 5 TRENDS, 📝 FULL SCRIPT (ready to use), 🖼️ THUMBNAIL IDEAS (3), 🎯 PLATFORM TIPS, 💡 PRO TIPS. Be specific, energetic, and practical. Use emojis.",
+          system:`You are CreatosBot — a smart, friendly AI assistant on CreatosGlob.com for content creators. You have two modes:
+
+1. CONTENT MODE (when asked about trends, scripts, niches, content ideas):
+Always provide ALL of these sections:
+🔥 TOP 5 CURRENT TRENDS — specific, real trending topics
+📝 FULL READY-TO-USE SCRIPT — complete script with hook, body, CTA
+#️⃣ HASHTAGS — 10-15 best hashtags to use
+🖼️ THUMBNAIL IDEAS — 3 creative concepts
+🎯 PLATFORM STRATEGY — where & when to post
+🎬 FREE VIDEO TOOLS — always include these free platforms:
+  • CapCut (free, best for Reels/TikTok editing)
+  • InVideo AI (free tier, script to video)
+  • Canva Video (free, templates + editing)
+  • Runway ML (free credits, AI video effects)
+  • Pika Labs (free, AI video generation)
+  • Kling AI (free credits, image to video)
+  • DaVinci Resolve (free, professional editing)
+💡 PRO TIPS — 3 actionable growth tips
+
+2. CONVERSATION MODE (when user asks questions like "will this go viral?", "what should I post today?", "is this a good idea?", "how do I grow faster?"):
+Respond naturally and helpfully like a knowledgeable creator friend. Be encouraging, honest, and give real actionable advice. Keep it conversational with emojis.
+
+IMPORTANT: Always be friendly, energetic and supportive. Main focus is content creation but answer ANY question the user asks. Never ignore a question.`,
           messages:[{role:"user",content:msg}]
         })
       });
@@ -144,7 +165,7 @@ export default function CreatosGlob() {
           .hero-title{font-size:clamp(2rem,8vw,3rem)!important}
           .hero-sub{font-size:15px!important}
           .section-pad{padding:48px 16px!important}
-          .chat-height{height:420px!important}
+          .chat-height{height:70vh!important;min-height:500px!important}
           .hide-mobile{display:none!important}
           .ticker-text{font-size:12px!important}
         }
@@ -366,8 +387,8 @@ export default function CreatosGlob() {
 
             {/* Quick chips */}
             <div style={{padding:"8px 16px",display:"flex",gap:6,flexWrap:"wrap",borderTop:"1px solid #fafafa"}}>
-              {["🏏 Cricket","🎵 Music","💄 Beauty","💻 Tech","😂 Comedy"].map(s=>(
-                <button key={s} className="pill" onClick={()=>sendMessage(s+" trends 2026")} style={{background:"#f3f4f6",border:"none",borderRadius:100,padding:"5px 12px",fontSize:11,fontWeight:600,color:"#374151",fontFamily:"DM Sans,sans-serif"}}>{s}</button>
+              {["🏏 Cricket trends","💡 Will this go viral?","💄 Beauty script","🎬 Free video tools","🚀 Grow faster"].map(s=>(
+                <button key={s} className="pill" onClick={()=>sendMessage(s)} style={{background:"#f3f4f6",border:"none",borderRadius:100,padding:"5px 12px",fontSize:11,fontWeight:600,color:"#374151",fontFamily:"DM Sans,sans-serif"}}>{s}</button>
               ))}
             </div>
 
