@@ -86,7 +86,7 @@ export default function CreatosGlob() {
   const [loading, setLoading]       = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
   const [genImg, setGenImg]         = useState(null);
-  const [apiKeys, setApiKeys]       = useState({ claude:"", gemini:"" });
+  const [apiKeys]                   = useState({ claude: process.env.NEXT_PUBLIC_CLAUDE_KEY || "", gemini: process.env.NEXT_PUBLIC_GEMINI_KEY || "" });
   const [showKeys, setShowKeys]     = useState(false);
   const [imgPrompt, setImgPrompt]   = useState("");
   const [wordIdx, setWordIdx]       = useState(0);
@@ -291,24 +291,10 @@ export default function CreatosGlob() {
           <div style={{background:"linear-gradient(135deg,#fff0f0,#fff8e1)",border:"2px solid #ff6b6b44",borderRadius:100,padding:"7px 16px",fontSize:12,fontWeight:700,color:"#ff6b6b",display:"flex",alignItems:"center",gap:6,animation:"heartbeat 2s ease infinite"}}>
             <div style={{width:8,height:8,borderRadius:"50%",background:"#ff6b6b",animation:"pulse 1.2s infinite"}}/>🔥 Live Trends
           </div>
-          <button onClick={()=>setShowKeys(!showKeys)} style={{background:"linear-gradient(135deg,#fff0f6,#fff8e1)",border:"2px solid #ffd60a55",borderRadius:100,padding:"7px 18px",cursor:"pointer",fontWeight:700,fontSize:13,color:"#ff9f1c",fontFamily:"Poppins,sans-serif"}}>⚙️ API Keys</button>
+          <div style={{background:"linear-gradient(135deg,#fff0f6,#fffde7)",border:"2px solid #ffd60a55",borderRadius:100,padding:"7px 18px",fontWeight:700,fontSize:13,color:"#ff9f1c",fontFamily:"Poppins,sans-serif"}}>✨ AI Powered</div>
         </div>
       </header>
 
-      {/* ── API KEYS PANEL ── */}
-      {showKeys&&(
-        <div style={{position:"fixed",top:78,right:16,zIndex:200,background:"#fffdf5",borderRadius:24,padding:24,width:310,boxShadow:"0 24px 80px rgba(255,107,107,0.2)",border:"3px solid #ffd60a44"}}>
-          <div style={{fontWeight:900,marginBottom:18,fontSize:17}}>🔑 Enter API Keys</div>
-          {[{label:"Claude API Key",sub:"console.anthropic.com",k:"claude",ph:"sk-ant-..."},{label:"Gemini API Key",sub:"aistudio.google.com",k:"gemini",ph:"AIza..."}].map(({label,sub,k,ph})=>(
-            <div key={k} style={{marginBottom:14}}>
-              <div style={{fontWeight:700,fontSize:13,marginBottom:2}}>{label}</div>
-              <div style={{fontSize:11,color:"#aaa",marginBottom:6}}>{sub}</div>
-              <input type="password" placeholder={ph} value={apiKeys[k]} onChange={e=>setApiKeys(p=>({...p,[k]:e.target.value}))} style={{width:"100%",border:"2px solid #ffd60a44",borderRadius:10,padding:"9px 13px",fontSize:13,outline:"none",fontFamily:"Poppins,sans-serif",background:"#fffdf5"}}/>
-            </div>
-          ))}
-          <button onClick={()=>setShowKeys(false)} style={{width:"100%",background:"linear-gradient(135deg,#ff6b6b,#ffd60a)",border:"none",color:"#fff",padding:12,borderRadius:12,fontWeight:800,cursor:"pointer",fontSize:14,fontFamily:"Poppins,sans-serif",boxShadow:"0 4px 16px rgba(255,107,107,0.35)"}}>✓ Save & Close 🎉</button>
-        </div>
-      )}
 
       {/* ── TICKER ── */}
       <div style={{background:"linear-gradient(135deg,#ff6b6b,#ff9f1c,#ffd60a,#63f5c0,#4cc9f0,#a78bfa)",backgroundSize:"400%",animation:"gradShift 6s ease infinite",padding:"10px 0",overflow:"hidden"}}>
