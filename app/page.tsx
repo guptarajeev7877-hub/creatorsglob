@@ -154,7 +154,11 @@ export default function CreatosGlob() {
     const prompt = imgPrompt || "Viral YouTube thumbnail ultra vibrant colorful Gen-Z happy positive style";
     setImgLoading(true); setGenImg(null);
     try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${apiKeys.gemini}`, {
+      const res = await fetch("/api/image", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ prompt })
+}); {
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({ instances:[{ prompt }], parameters:{ sampleCount:1, aspectRatio:"16:9" } })
       });
