@@ -1,20 +1,21 @@
-import { NextRequest, NextResponse } from "next/server";
-
-export async function POST(request: NextRequest) {
+const generateImage = async () => {
+  const prompt = imgPrompt || "Viral YouTube thumbnail vibrant colorful Gen-Z style";
+  setImgLoading(true);
+  setGenImg(null);
   try {
-    const body = await request.json();
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch("/api/image", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.CLAUDE_KEY || "",
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
     });
-    const data = await response.json();
-    return NextResponse.json(data);
-  } catch (error) {
-    return NextResponse.json({ error: "Failed" }, { status: 500 });
+    const data = await res.json();
+    if (data.imageUrl) {
+      setGenImg(data.imageUrl);
+    } else {
+      setGenImg("ERROR");
+    }
+  } catch {
+    setGenImg("ERROR");
   }
-}
+  setImgLoading(false);
+};
